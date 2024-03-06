@@ -132,7 +132,7 @@ class WSSESoap
         }
     }
 
-    public function addUserToken($userName, $password = null, $passwordDigest = false)
+    public function addUserToken($userName, $password = null, $passwordDigest = false, $passwordDigestExt = false)
     {
         if ($passwordDigest && empty($password)) {
             throw new Exception('Cannot calculate the digest without a password');
@@ -157,6 +157,9 @@ class WSSESoap
         if ($password) {
             $passType = self::WSUNAME.'#PasswordText';
             if ($passwordDigest) {
+                if ($passwordDigestExt) {
+                    $password = base64_encode(sha1($password, true));
+                }
                 $password = base64_encode(sha1($nonce.$createdate.$password, true));
                 $passType = self::WSUNAME.'#PasswordDigest';
             }
